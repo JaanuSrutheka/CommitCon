@@ -42,11 +42,13 @@ The solution should:
 
 ## Project Description
 
-CommitCon simulates the spread of rumours across a synthetic social network. Users are represented as nodes, and connections between users are represented as edges.
 
-The application generates networks using different graph models and simulates the spread of a rumour from a selected source. It then applies intervention strategies to identify users whose blocking may help reduce the spread.
+Outbreak of Lies is a network-based system that simulates misinformation spread and compares different intervention strategies, including Random Selection, Degree Centrality, Betweenness Centrality, and Greedy Influence Minimization.
 
-The project compares intervention strategies using metrics such as final reach, number of affected users, and spread progression. An interactive Streamlit dashboard presents the network, simulation results, comparisons, and downloadable outputs.
+Our main strategy, Greedy Influence Minimization, intelligently selects users who are expected to reduce misinformation spread the most. It evaluates candidate users through repeated simulations, estimates how much each intervention reduces the rumour’s reach, and selects the candidate with the highest marginal benefit. After each selection, it recalculates the benefits of the remaining candidates, accounting for overlapping influence and the limited intervention budget. This makes target selection outcome-driven rather than based only on popularity or network connections.
+
+The system evaluates strategies using average rumour reach and percentage reduction, presenting the results through an interactive Streamlit dashboard. Greedy can be more effective, but its performance is verified through experiments rather than assumed.
+
 
 ### Key Features
 
