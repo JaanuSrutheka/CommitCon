@@ -1,59 +1,192 @@
-# Outbreak of Lies
+# CommitCon — Outbreak of Lies
 
-**Misinformation Containment and Intervention Optimization**
+## Team Details
 
-## Overview
+**Team Name:** CustomCrew
 
-Outbreak of Lies is a simulation-based platform that models how misinformation spreads through a social network and identifies effective intervention targets when resources are limited.
+**Team Members:**
 
-## Objectives
+1. Naishitha
+2. Harshini
+3. Jaanu Srutheka
+4. Raj.Harini
+5. Dhivyadharshini
 
-- Generate or load a social network.
-- Simulate stochastic rumour propagation.
-- Select intervention targets using different strategies.
-- Compare random, degree-based, betweenness-based and greedy selection.
-- Evaluate effectiveness through repeated simulations.
-- Visualize spread reduction and intervention performance.
+## Selected Problem Statement: Outbreak of Lies – Misinformation Containment
 
-## Tech Stack
+### Problem Context
 
-- Python
-- NetworkX
-- NumPy
-- Pandas
-- Streamlit
-- Matplotlib and Plotly
-- Pytest
+A false rumour begins spreading through a college social network. The college has limited resources and can intervene with only a small number of accounts through fact-checking or blocking.
 
-## Setup
+### Problem Statement
 
-```bash
-git clone YOUR_REPOSITORY_URL
-cd outbreak-of-lies
-python -m venv .venv
-```
+Develop a simulation system that models the spread of a rumour through a social network and determines where limited interventions should be applied to reduce its overall spread.
 
-Activate the virtual environment and install dependencies:
+The solution should:
 
-```bash
-python -m pip install -r requirements.txt
-```
+- Generate or accept a social network.
+- Simulate how information spreads between connected users.
+- Allow a limited number of users to be selected for intervention.
+- Show the spread of the rumour with and without intervention.
+- Run repeated simulations to account for variation in spreading behavior.
+- Provide measurable results showing the effectiveness of the intervention strategy.
+- Compare the proposed strategy against simple baseline strategies.
 
-Run the application after implementation:
+### Challenges
 
-```bash
-streamlit run app.py
-```
+- The most connected users may not always be the most effective intervention points.
+- Information spread can vary between simulation runs.
+- The number of interventions is limited.
+- Selecting one user may change the importance of other users.
+- The effectiveness of the strategy should be demonstrated across multiple simulations rather than a single scenario.
+
+## Project Description
+
+CommitCon simulates the spread of rumours across a synthetic social network. Users are represented as nodes, and connections between users are represented as edges.
+
+The application generates networks using different graph models and simulates the spread of a rumour from a selected source. It then applies intervention strategies to identify users whose blocking may help reduce the spread.
+
+The project compares intervention strategies using metrics such as final reach, number of affected users, and spread progression. An interactive Streamlit dashboard presents the network, simulation results, comparisons, and downloadable outputs.
+
+### Key Features
+
+- Synthetic social network generation.
+- Rumour propagation simulation.
+- Intervention strategies:
+  - Random selection
+  - Degree centrality
+  - Betweenness centrality
+  - Greedy selection
+- Comparison of intervention effectiveness.
+- Interactive network visualisation.
+- Metrics and spread-history charts.
+- Exportable results.
+
+## Technologies and Tools Used
+
+- **Python** — Core implementation
+- **NetworkX** — Graph generation and network analysis
+- **NumPy** — Numerical operations
+- **Pandas** — Data handling and result tables
+- **Plotly** — Interactive visualisations
+- **Streamlit** — Interactive dashboard
+- **Pytest** — Automated testing
+- **Git and GitHub** — Version control and collaboration
+- **Visual Studio Code** — Development environment
 
 ## Project Structure
 
-- `network_generator.py` — Network creation
-- `rumor_simulator.py` — Rumour propagation
-- `intervention.py` — Intervention selection algorithms
-- `evaluation.py` — Repeated experiments and metrics
-- `app.py` — Interactive dashboard
-- `tests/` — Automated tests
+```text
+CommitCon/
+├── app.py
+├── network_generator.py
+├── rumor_simulator.py
+├── intervention.py
+├── evaluation.py
+├── requirements.txt
+├── README.md
+└── tests/
+```
 
-## Team Workflow
+## Installation and Execution
 
-Each member works on a dedicated feature branch. Changes are submitted through pull requests and reviewed before being merged into `main`.
+### Prerequisites
+
+- Python 3.10 or a compatible Python version supported by the dependencies.
+- Git (if cloning the repository).
+- A terminal or Visual Studio Code.
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/JaanuSrutheka/CommitCon.git
+cd CommitCon
+```
+
+### 2. Create a virtual environment
+
+**Windows PowerShell:**
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+**macOS/Linux:**
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+### 3. Install dependencies
+
+```bash
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
+
+### 4. Run the tests
+
+```bash
+python -m pytest -q
+```
+
+### 5. Launch the dashboard
+
+```bash
+python -m streamlit run app.py
+```
+
+Open the local URL displayed in the terminal, usually `http://localhost:8501`.
+
+### Demonstration Workflow
+
+1. Select a network-generation model and configure the number of users.
+2. Set the rumour transmission probability and simulation parameters.
+3. Choose an intervention strategy and intervention budget.
+4. Run the experiment.
+5. Inspect the network visualisation and rumour-spread metrics.
+6. Compare the intervention strategies and review the charts.
+7. Export the available results.
+
+## Evaluation Metrics
+
+The application can compare strategies using metrics such as:
+
+- Final rumour reach.
+- Number of users affected.
+- Spread progression across simulation rounds.
+- Differences in reach between intervention strategies.
+
+A lower final reach generally indicates a more effective intervention, provided the experiments use comparable network and simulation settings.
+
+## Significant External Resources Used
+
+- NetworkX documentation: https://networkx.org/documentation/stable/
+- Streamlit documentation: https://docs.streamlit.io/
+- Plotly Python documentation: https://plotly.com/python/
+- Pytest documentation: https://docs.pytest.org/
+
+These resources are listed as technical references. Add any datasets, tutorials, research papers, or other resources that the team actually used.
+
+## Use of AI Tools
+
+AI tools, including ChatGPT, were used for assistance with [describe the actual uses, such as understanding concepts, debugging, documentation, or test development].
+
+The project code, experimental results, and final submission should be reviewed and validated by the team. This disclosure should be adjusted to accurately reflect the team's actual use of AI tools and the hackathon's rules.
+
+## Limitations
+
+- The networks are synthetic and may not represent every real-world social network.
+- Rumour transmission probabilities are model assumptions.
+- Simulation results can vary with network structure, random seeds, and intervention settings.
+- Results from the simulator should not be interpreted as guaranteed predictions of real-world misinformation spread.
+
+## Future Enhancements
+
+- Support real-world or anonymised social-network datasets.
+- Add more intervention strategies.
+- Evaluate results over repeated simulation runs.
+- Improve the modelling of user behaviour and rumour transmission.
+- Add downloadable experiment reports.

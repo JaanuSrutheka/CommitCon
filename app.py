@@ -26,7 +26,9 @@ from evaluation import evaluate_strategies
 # Page and design system
 # ─────────────────────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Outbreak of Lies | Containment Intelligence",
+    page_title="" \
+    "" \
+    "Outbreak of Lies | Containment Intelligence",
     page_icon="🛡️",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -53,6 +55,13 @@ html, body, [class*="css"] { font-family:'Manrope',sans-serif; }
 .block-container {max-width:1660px;padding-top:1.25rem;padding-bottom:2.5rem;}
 h1,h2,h3,h4 {font-family:'Manrope',sans-serif!important;letter-spacing:-.035em!important;color:var(--text)!important;}
 p,li,label,.stMarkdown {color:#D7E1F1;}
+/* Larger, clearer controls and more consistent spacing */
+[data-testid='stWidgetLabel'] p {font-size:1rem!important;font-weight:750!important;color:#F1F6FF!important;}
+[data-testid='stSidebar'] [data-testid='stSlider'] {padding:.35rem 0 .6rem;}
+[data-testid='stSelectbox'], [data-testid='stNumberInput'], [data-testid='stSlider'], [data-testid='stSelectSlider'] {margin-bottom:.45rem;}
+[data-baseweb='select'] > div {min-height:2.8rem!important;}
+.stTabs [data-baseweb='tab'] {font-size:.95rem!important;padding-left:1rem;padding-right:1rem;}
+[data-testid='stVerticalBlock'] > [data-testid='stHorizontalBlock'] {gap:1rem;}
 small,.muted {color:var(--muted)!important;}
 hr {border-color:var(--stroke)!important;}
 [data-testid="stMetric"] {
@@ -67,7 +76,7 @@ hr {border-color:var(--stroke)!important;}
 .stTabs [data-baseweb="tab"] {height:46px;background:transparent;border-radius:9px 9px 0 0;color:#9BAEC8;font-weight:700;}
 .stTabs [aria-selected="true"] {color:var(--cyan)!important;border-bottom:2px solid var(--cyan)!important;}
 .stButton > button, .stDownloadButton > button {
- border-radius:10px;border:1px solid #30435F;background:#121E31;color:#EAF4FF;
+ min-height:2.85rem;font-size:1rem;padding:.55rem 1rem;border-radius:10px;border:1px solid #30435F;background:#121E31;color:#EAF4FF;
  font-weight:750;transition:all .18s ease;
 }
 .stButton > button:hover,.stDownloadButton > button:hover {
@@ -307,6 +316,13 @@ def average_for_strategy(summary, key):
 # ─────────────────────────────────────────────────────────────────────────────
 # Hero
 # ─────────────────────────────────────────────────────────────────────────────
+st.markdown("""
+<style>
+.hero {
+    margin-top: 15px;
+}
+</style>
+""", unsafe_allow_html=True)
 st.markdown(
     """
     <div class="hero">
@@ -334,7 +350,8 @@ with st.sidebar:
         transmission_prob = st.slider("Transmission probability", 0.0, 1.0, 0.30, 0.05)
         budget = st.slider("Intervention budget", 0, 30, 8, 1)
         max_rounds = st.slider("Maximum rounds", 1, 50, 15, 1)
-        n_runs = st.select_slider("Evaluation runs per strategy", options=[3, 5, 10, 15, 20], value=5)
+        n_runs = st.select_slider("Evaluation runs per strategy", options=[3, 5, 10, 15, 20], value=5, help="More runs give a more stable comparison but take longer.")
+        greedy_runs = st.select_slider("Greedy candidate simulations", options=[2, 3, 5, 8, 10], value=5, help="How many propagation simulations estimate each candidate's marginal benefit. Higher values improve estimate stability but increase runtime.")
         seed = st.number_input("Reproducibility seed", min_value=0, max_value=999999, value=42, step=1)
         selected_strategy_label = st.selectbox(
             "Network view intervention",
@@ -382,7 +399,7 @@ if run_clicked:
                     "transmission_prob": float(transmission_prob),
                     "max_rounds": int(max_rounds),
                     "seed": int(seed),
-                    "n_runs": 3,
+                    "n_runs": int(greedy_runs),
                 },
             )
             single_result = simulate_spread(
@@ -402,15 +419,16 @@ if run_clicked:
                 transmission_prob=float(transmission_prob),
                 max_rounds=int(max_rounds),
                 seed=int(seed),
-                greedy_runs=3,
+                greedy_runs=int(greedy_runs),
             )
 
         st.session_state["outbreak_result"] = {
             "graph": graph, "source": source, "selected_targets": selected_targets,
+            "greedy_targets": list(selected_targets) if strategy_key == "greedy" else [],
             "single_result": single_result, "evaluation": evaluation,
             "model_label": model_label, "n_users": int(n_users),
             "transmission_prob": float(transmission_prob), "budget": actual_budget,
-            "max_rounds": int(max_rounds), "n_runs": int(n_runs), "seed": int(seed),
+            "max_rounds": int(max_rounds), "n_runs": int(n_runs), "greedy_runs": int(greedy_runs), "seed": int(seed),
             "strategy_key": strategy_key, "strategy_label": selected_strategy_label,
             "layout_name": layout_name,
         }
@@ -640,6 +658,34 @@ with strategy_tab:
             f'<p>Average users avoided: <b>{reach_delta:.2f}</b></p></div>',
             unsafe_allow_html=True,
         )
+    st.markdown("---")
+    section_heading("GREEDY DECISION ENGINE", "How the next target is chosen",
+                    f"The greedy selector estimates candidate impact using {data.get('greedy_runs', 3)} propagation simulations per candidate evaluation.")
+    g1, g2, g3 = st.columns(3, gap="medium")
+    with g1:
+        st.markdown('<div class="panel" style="min-height:150px"><div class="panel-kicker">STEP 01</div><div class="panel-title">Evaluate candidates</div><p class="footnote">Temporarily add an eligible user to the blocked set and simulate the spread.</p></div>', unsafe_allow_html=True)
+    with g2:
+        st.markdown('<div class="panel" style="min-height:150px"><div class="panel-kicker">STEP 02</div><div class="panel-title">Estimate marginal benefit</div><p class="footnote">Compare estimated reach with the current intervention set. Prefer the candidate with the largest estimated additional reduction.</p></div>', unsafe_allow_html=True)
+    with g3:
+        st.markdown('<div class="panel" style="min-height:150px"><div class="panel-kicker">STEP 03</div><div class="panel-title">Update and repeat</div><p class="footnote">Keep the selected target, recalculate remaining candidates, and continue until the budget is used.</p></div>', unsafe_allow_html=True)
+
+    greedy_targets = data.get("greedy_targets", [])
+    if greedy_targets:
+        target_profile = []
+        betweenness = nx.betweenness_centrality(graph) if graph.number_of_nodes() <= 250 else {}
+        for rank, node in enumerate(greedy_targets, start=1):
+            target_profile.append({
+                "Selection order*": rank,
+                "User ID": node,
+                "Direct connections": int(graph.degree[node]),
+                "Betweenness": round(float(betweenness.get(node, 0.0)), 4) if betweenness else "Skipped for large graph",
+                "Is source": node == source,
+            })
+        with st.expander("Inspect Greedy's selected target set", expanded=True):
+            st.dataframe(pd.DataFrame(target_profile), use_container_width=True, hide_index=True)
+            st.caption("*Selection order is shown only if the intervention function returns targets in selection order. The table reports network properties, not measured per-user marginal gains.")
+    st.caption("Greedy is a heuristic: deeper candidate simulations can make estimates more stable, but do not guarantee it will outperform every other strategy on every network.")
+
     st.markdown("#### Strategy scorecard")
     strategy_rows = []
     for key, metrics in summary.items():
@@ -696,6 +742,7 @@ with report_tab:
             "intervention_budget": data["budget"],
             "maximum_rounds": data["max_rounds"],
             "evaluation_runs": data["n_runs"],
+            "greedy_candidate_simulations": data.get("greedy_runs", 3),
             "random_seed": data["seed"],
             "selected_network_view": data["strategy_label"],
         })
