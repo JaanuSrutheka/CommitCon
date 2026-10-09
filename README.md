@@ -2,7 +2,7 @@
 
 ## Team Details
 
-**Team Name:** CommitCon
+**Team Name:** CustomCrew
 
 **Team Members:**
 
@@ -14,9 +14,31 @@
 
 ## Selected Problem Statement
 
-**Outbreak of Lies - Rumour Spread Simulation and Intervention**
-
-The project models how rumours or misinformation spread through a social network and explores how targeted interventions can reduce their reach.
+ Outbreak of Lies - Misinformation Containment 
+Problem Context 
+A false rumour begins spreading through a college social network. The college 
+has limited resources and can intervene with only a small number of accounts through 
+fact-checking or blocking. 
+Problem Statement 
+Develop a simulation system that models the spread of a rumour through a social 
+network and determines where limited interventions should be applied to reduce its 
+overall spread. The solution should: 
+● Generate or accept a social network. 
+● Simulate how information spreads between connected users. 
+● Allow a limited number of users to be selected for intervention. 
+● Show the spread of the rumour with and without intervention. 
+● Run repeated simulations to account for variation in spreading behavior. 
+● Provide measurable results showing the effectiveness of the intervention 
+strategy. 
+● Compare the proposed strategy against simple baseline strategies. 
+Challenges 
+● The most connected users may not always be the most effective intervention 
+points. 
+● Information spread can vary between simulation runs. 
+● The number of interventions is limited. 
+● Selecting one user may change the importance of other users. 
+● The effectiveness of the strategy should be demonstrated across multiple 
+simulations rather than a single scenario.
 
 ## Project Description
 
